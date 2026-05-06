@@ -402,121 +402,109 @@ async function supaFetch(path, method='GET', body=null) {
 // ═══════════════════════════════════════════
 const COMICS = [
   {
-    // IMAGE: ~660x840px, 4-panel 2x2, title "VIDEO GAME" at top (~5% height)
-    // Panels: TL=0-50%w, 5-50%h | TR=50-100%w, 5-50%h | BL=0-50%w, 50-100%h | BR=50-100%w, 50-100%h
-    // x,y = CENTER of bubble as % of full image; w,h = size as %
     id: 'videogame',
     title: 'Video Game',
     file: 'comicvideogame.jpg',
     bubbles: [
-      // Panel TL: large bubble top-left, smaller bubble to its right
-      { x: 17, y: 16, w: 24, h: 13 },   // TL large bubble (left person)
-      { x: 37, y: 13, w: 18, h: 10 },   // TL smaller bubble (right person)
-      // Panel TR: adult's large bubble top, small bubble lower-right
-      { x: 66, y: 13, w: 20, h: 12 },   // TR adult bubble
-      { x: 80, y: 23, w: 14, h: 9  },   // TR small kid bubble
-      // Panel BL: two bubbles — upper-left area and mid-left
-      { x: 10, y: 63, w: 15, h: 10 },   // BL upper-left bubble
-      { x: 22, y: 57, w: 16, h: 10 },   // BL mid bubble
-      // Panel BR: large upper bubble, smaller lower bubble
-      { x: 72, y: 60, w: 22, h: 12 },   // BR large bubble
-      { x: 80, y: 74, w: 16, h: 9  },   // BR lower bubble
+      // P1 TL: large oval upper-left, smaller bubble right of it
+      { x: 18, y: 18, w: 26, h: 14 },
+      { x: 37, y: 14, w: 18, h: 10 },
+      // P2 TR: large bubble upper-right half, small bubble below-right
+      { x: 72, y: 15, w: 22, h: 13 },
+      { x: 83, y: 27, w: 13, h: 9  },
+      // P3 BL: small bubble far-upper-left, larger bubble mid-left
+      { x: 9,  y: 60, w: 13, h: 9  },
+      { x: 21, y: 69, w: 18, h: 12 },
+      // P4 BR: large bubble upper area, small lower bubble
+      { x: 77, y: 62, w: 22, h: 13 },
+      { x: 83, y: 76, w: 14, h: 9  },
     ]
   },
   {
-    // IMAGE: ~535x740px, 4 horizontal panels stacked
-    // Panel 1: 0-25%h | Panel 2: 25-50%h | Panel 3: 50-75%h | Panel 4: 75-100%h
     id: 'soccer',
     title: 'Soccer Window',
     file: 'comicsoccerwindow.jpg',
     bubbles: [
-      // Panel 1: large oval left, speech bubble right
-      { x: 25, y: 11, w: 32, h: 16 },   // left oval bubble
-      { x: 68, y: 10, w: 24, h: 14 },   // right speech bubble
-      // Panel 2: one large bubble right side
-      { x: 63, y: 36, w: 30, h: 14 },
-      // Panel 3: two bubbles
-      { x: 30, y: 60, w: 22, h: 12 },
-      { x: 70, y: 60, w: 22, h: 13 },
-      // Panel 4: two bubbles
-      { x: 28, y: 85, w: 26, h: 12 },
-      { x: 67, y: 84, w: 22, h: 12 },
+      // P1: large oval left, speech bubble right
+      { x: 26, y: 12, w: 33, h: 17 },
+      { x: 71, y: 11, w: 22, h: 15 },
+      // P2: one bubble right-center
+      { x: 66, y: 37, w: 30, h: 14 },
+      // P3: two bubbles
+      { x: 31, y: 61, w: 24, h: 12 },
+      { x: 71, y: 61, w: 22, h: 13 },
+      // P4: left bubble, right bubble
+      { x: 30, y: 85, w: 28, h: 12 },
+      { x: 74, y: 85, w: 20, h: 11 },
     ]
   },
   {
-    // IMAGE: ~970x1170px tall, 4-panel 2x2
-    // Panels: TL=0-50%w, 0-50%h | TR=50-100%w, 0-50%h | BL=0-50%w, 50-100%h | BR=50-100%w, 50-100%h
     id: 'mousefood',
     title: 'Mouse & Food',
     file: 'comicmousefood.jpg',
     bubbles: [
-      // Panel TL: two bubbles — large left, smaller right
-      { x: 13, y: 12, w: 20, h: 16 },   // TL left large bubble
-      { x: 31, y: 8,  w: 18, h: 12 },   // TL right smaller bubble
-      // Panel TR: two bubbles — upper center, lower right
-      { x: 62, y: 7,  w: 20, h: 13 },   // TR upper bubble
-      { x: 78, y: 14, w: 17, h: 11 },   // TR lower-right bubble
-      // Panel BL: three bubbles — far left, upper center, lower center
-      { x: 9,  y: 64, w: 14, h: 10 },   // BL far-left bubble
-      { x: 31, y: 57, w: 20, h: 12 },   // BL upper-center bubble
-      { x: 28, y: 72, w: 20, h: 11 },   // BL lower-center bubble
-      // Panel BR: one large upper bubble + one lower bubble
-      { x: 67, y: 57, w: 22, h: 13 },   // BR upper bubble
-      { x: 72, y: 73, w: 20, h: 12 },   // BR lower bubble
+      // P1 TL: far-left large bubble, right-of-center smaller bubble
+      { x: 12, y: 14, w: 18, h: 17 },
+      { x: 30, y: 10, w: 17, h: 12 },
+      // P2 TR: upper-left of TR panel, lower-right of TR panel
+      { x: 61, y: 9,  w: 19, h: 13 },
+      { x: 79, y: 17, w: 16, h: 11 },
+      // P3 BL: far-left, upper-center, lower-center
+      { x: 8,  y: 65, w: 12, h: 10 },
+      { x: 29, y: 58, w: 19, h: 11 },
+      { x: 27, y: 73, w: 18, h: 10 },
+      // P4 BR: upper bubble, lower bubble
+      { x: 68, y: 58, w: 22, h: 13 },
+      { x: 71, y: 75, w: 19, h: 11 },
     ]
   },
   {
-    // IMAGE: ~635x845px, 4-panel 2x2, title bar at top ~7%
-    // Panels: TL=0-50%w, 7-53%h | TR=50-100%w, 7-53%h | BL=0-50%w, 53-100%h | BR=50-100%w, 53-100%h
     id: 'ufo',
     title: 'UFO',
     file: 'comicufo.jpg',
     bubbles: [
-      // Panel TL: large bubble occupies upper-left of panel
-      { x: 20, y: 19, w: 30, h: 16 },
-      // Panel TR: bubble upper-right of panel
-      { x: 72, y: 16, w: 24, h: 14 },
-      // Panel BL: one bubble upper area
-      { x: 19, y: 63, w: 28, h: 13 },
-      // Panel BR: two bubbles — upper (person) and lower (alien)
-      { x: 68, y: 63, w: 24, h: 12 },
-      { x: 72, y: 78, w: 20, h: 11 },
+      // P1 TL: large bubble upper-left of panel
+      { x: 21, y: 21, w: 31, h: 16 },
+      // P2 TR: bubble sits right-of-center in right half
+      { x: 76, y: 18, w: 23, h: 14 },
+      // P3 BL: one bubble upper portion
+      { x: 20, y: 64, w: 28, h: 13 },
+      // P4 BR: upper bubble (person), lower bubble (alien)
+      { x: 69, y: 64, w: 24, h: 12 },
+      { x: 76, y: 79, w: 19, h: 10 },
     ]
   },
   {
-    // IMAGE: ~470x590px, title "LAUNDROMAT" at top ~6%
-    // Panel 1 (wide top): 6-46%h | Panel 2 (BL): 46-100%h, 0-52%w | Panel 3 (BR): 46-100%h, 52-100%w
     id: 'laundromat',
     title: 'Laundromat',
     file: 'comiclaundryshower.jpg',
     bubbles: [
-      // Panel 1 top: left bubble, right bubble
-      { x: 23, y: 17, w: 24, h: 14 },
-      { x: 72, y: 15, w: 22, h: 14 },
-      // Panel 2 BL: one bubble upper area
-      { x: 32, y: 60, w: 28, h: 14 },
-      // Panel 3 BR: no clear speech bubble — skip
+      // P1 wide top: left bubble, right bubble
+      { x: 24, y: 18, w: 26, h: 15 },
+      { x: 74, y: 16, w: 22, h: 15 },
+      // P2 BL: upper-right bubble inside panel, lower-left bubble
+      { x: 34, y: 58, w: 26, h: 13 },
+      { x: 14, y: 72, w: 20, h: 14 },
     ]
   },
   {
-    // IMAGE: ~600x800px, 3 rows: top two side-by-side (~0-28%h), wide middle (~28-58%h), bottom two (~58-100%h)
     id: 'dogwalk',
     title: 'Dog Walk',
     file: 'comicbookdogwalk.jpg',
     bubbles: [
-      // Row 1 left panel: thought bubble (person)
-      { x: 24, y: 11, w: 26, h: 14 },
-      // Row 1 right panel: thought bubble (cat)
-      { x: 73, y: 10, w: 24, h: 15 },
-      // Row 2 wide panel: two bubbles — large left-center, small right
-      { x: 40, y: 38, w: 28, h: 13 },
-      { x: 71, y: 36, w: 18, h: 10 },
-      // Row 3 left panel: two bubbles — large left, smaller right
-      { x: 17, y: 72, w: 22, h: 12 },
-      { x: 33, y: 66, w: 18, h: 11 },
-      // Row 3 right panel: large thought bubble upper, smaller lower
-      { x: 74, y: 67, w: 22, h: 14 },
-      { x: 80, y: 82, w: 17, h: 10 },
+      // Row1 L: thought bubble upper-right of panel
+      { x: 29, y: 11, w: 28, h: 15 },
+      // Row1 R: large thought bubble upper-left of right panel
+      { x: 68, y: 10, w: 28, h: 16 },
+      // Row2 wide: large bubble left-center, small bubble right
+      { x: 42, y: 38, w: 30, h: 14 },
+      { x: 72, y: 37, w: 18, h: 10 },
+      // Row3 L: large upper-left bubble, smaller right bubble
+      { x: 16, y: 71, w: 22, h: 13 },
+      { x: 34, y: 65, w: 17, h: 11 },
+      // Row3 R: large thought cloud upper, small lower thought cloud
+      { x: 74, y: 66, w: 23, h: 15 },
+      { x: 80, y: 83, w: 16, h: 10 },
     ]
   }
 ];

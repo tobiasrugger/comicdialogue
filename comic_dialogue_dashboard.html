@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comic Creator — Teacher Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&display=swap');
+
+  :root {
+    --ink: #1a1a2e;
+    --paper: #fdf6e3;
+    --yellow: #ffe566;
+    --red: #e63946;
+    --blue: #457b9d;
+    --green: #2d6a4f;
+    --light-green: #c8f7c5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f0ecd8; font-family: 'Comic Neue', cursive; color: var(--ink); min-height: 100vh; }
+
+  /* ─── LOGIN ─── */
+  #login-screen {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+  .login-box {
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: 16px;
+    padding: 2.5rem;
+    max-width: 380px;
+    width: 100%;
+    box-shadow: 8px 8px 0 var(--ink);
+    text-align: center;
+  }
+  .login-box h1 { font-family: 'Bangers', cursive; font-size: 2.5rem; letter-spacing: 2px; margin-bottom: 0.5rem; }
+  .login-box p { color: #555; font-weight: 700; margin-bottom: 1.5rem; }
+  .login-input {
+    width: 100%; padding: 0.7rem 1rem;
+    border: 3px solid var(--ink); border-radius: 10px;
+    font-family: 'Comic Neue', cursive; font-size: 1rem; font-weight: 700;
+    margin-bottom: 1rem; outline: none;
+  }
+  .btn-login {
+    width: 100%; padding: 0.8rem;
+    background: var(--yellow); border: 3px solid var(--ink); border-radius: 10px;
+    font-family: 'Bangers', cursive; font-size: 1.5rem; letter-spacing: 2px;
+    cursor: pointer; box-shadow: 4px 4px 0 var(--ink);
+  }
+  .btn-login:hover { background: #ffd700; }
+  .login-error { color: var(--red); font-weight: 700; margin-top: 0.75rem; display: none; }
+
+  /* ─── DASHBOARD ─── */
+  #dashboard { display: none; }
+
+  .dash-header {
+    background: var(--ink);
+    color: var(--yellow);
+    padding: 1.25rem 2rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+  .dash-header h1 { font-family: 'Bangers', cursive; font-size: 2rem; letter-spacing: 2px; }
+  .dash-header-right { display: flex; gap: 0.75rem; align-items: center; }
+
+  .btn-refresh {
+    background: var(--yellow); color: var(--ink);
+    border: 2px solid var(--yellow); border-radius: 8px;
+    padding: 0.4rem 1rem; font-family: 'Bangers', cursive; font-size: 1.1rem; cursor: pointer;
+  }
+  .btn-refresh:hover { background: #ffd700; }
+
+  .dash-body { padding: 1.5rem 2rem; max-width: 1100px; margin: 0 auto; }
+
+  /* ─── STATS ROW ─── */
+  .stats-row {
+    display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: white; border: 3px solid var(--ink); border-radius: 12px;
+    padding: 1rem 1.5rem; box-shadow: 4px 4px 0 var(--ink);
+    flex: 1; min-width: 140px; text-align: center;
+  }
+  .stat-num { font-family: 'Bangers', cursive; font-size: 2.5rem; color: var(--ink); }
+  .stat-label { font-weight: 700; color: #555; font-size: 0.85rem; }
+
+  /* ─── FILTERS ─── */
+  .filters {
+    display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.5rem;
+  }
+  .filter-label { font-weight: 700; }
+  select, input[type=text] {
+    padding: 0.45rem 0.75rem;
+    border: 2px solid var(--ink); border-radius: 8px;
+    font-family: 'Comic Neue', cursive; font-size: 0.95rem; font-weight: 700;
+    background: white; outline: none;
+  }
+
+  /* ─── TABLE ─── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; background: white; border: 3px solid var(--ink); border-radius: 12px; overflow: hidden; }
+  thead { background: var(--ink); color: var(--yellow); }
+  th { font-family: 'Bangers', cursive; font-size: 1.05rem; letter-spacing: 1px; padding: 0.75rem 1rem; text-align: left; }
+  td { padding: 0.65rem 1rem; border-bottom: 1px solid #ddd; font-size: 0.9rem; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fffef0; }
+
+  .student-name { font-weight: 700; font-size: 1rem; }
+  .comic-badge {
+    display: inline-block;
+    background: var(--yellow); border: 2px solid var(--ink);
+    border-radius: 6px; padding: 0.15rem 0.5rem;
+    font-size: 0.8rem; font-weight: 700;
+  }
+  .time-cell { color: #666; font-size: 0.8rem; }
+
+  .btn-view {
+    background: var(--blue); color: white;
+    border: 2px solid var(--ink); border-radius: 7px;
+    padding: 0.3rem 0.7rem; font-family: 'Bangers', cursive;
+    font-size: 1rem; letter-spacing: 1px; cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-view:hover { background: #335f7a; }
+
+  .empty-row td { text-align: center; color: #888; padding: 2rem; font-weight: 700; }
+
+  /* ─── MODAL ─── */
+  #modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 100;
+    align-items: center; justify-content: center; padding: 1rem;
+  }
+  #modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--paper); border: 4px solid var(--ink); border-radius: 16px;
+    max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto;
+    box-shadow: 10px 10px 0 var(--ink);
+  }
+  .modal-header {
+    background: var(--ink); color: var(--yellow); padding: 1rem 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    border-radius: 10px 10px 0 0;
+  }
+  .modal-header h2 { font-family: 'Bangers', cursive; font-size: 1.6rem; letter-spacing: 1px; }
+  .btn-close {
+    background: none; border: 2px solid var(--yellow); border-radius: 6px;
+    color: var(--yellow); font-family: 'Bangers', cursive; font-size: 1.2rem;
+    cursor: pointer; padding: 0.2rem 0.6rem;
+  }
+  .modal-body { padding: 1.5rem; }
+
+  .modal-comic-wrap {
+    position: relative; display: inline-block; width: 100%;
+    border: 3px solid var(--ink); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem;
+  }
+  .modal-comic-wrap img { width: 100%; display: block; }
+
+  .bubble-overlay {
+    position: absolute; transform: translate(-50%,-50%);
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; pointer-events: none;
+  }
+  .bubble-overlay span {
+    font-family: 'Comic Neue', cursive; font-weight: 700;
+    font-size: clamp(0.5rem, 1.3vw, 0.8rem);
+    color: #111; line-height: 1.2; padding: 4px;
+    word-break: break-word;
+  }
+
+  .dialogue-list { margin-top: 0; }
+  .dialogue-item {
+    background: white; border: 2px solid var(--ink); border-radius: 8px;
+    padding: 0.6rem 0.9rem; margin-bottom: 0.5rem;
+    display: flex; gap: 0.75rem; align-items: flex-start;
+  }
+  .bubble-num {
+    background: var(--ink); color: var(--yellow);
+    font-family: 'Bangers', cursive; font-size: 0.9rem;
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .bubble-text { font-weight: 700; color: #222; }
+  .bubble-empty { color: #aaa; font-style: italic; }
+
+  .loading { text-align: center; padding: 3rem; font-family: 'Bangers', cursive; font-size: 1.5rem; color: #888; }
+</style>
+</head>
+<body>
+
+<!-- ═════════════ LOGIN ═════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div style="font-size:3rem;margin-bottom:0.5rem">🏫</div>
+    <h1>TEACHER DASHBOARD</h1>
+    <p>Comic Creator — Student Work</p>
+    <input class="login-input" type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')login()" />
+    <button class="btn-login" onclick="login()">ENTER</button>
+    <div class="login-error" id="login-error">Wrong password. Try again.</div>
+  </div>
+</div>
+
+<!-- ═════════════ DASHBOARD ═════════════ -->
+<div id="dashboard">
+  <div class="dash-header">
+    <h1>📋 Comic Creator — Student Work</h1>
+    <div class="dash-header-right">
+      <span id="last-refresh" style="font-size:0.85rem;opacity:0.7"></span>
+      <button class="btn-refresh" onclick="loadData()">↻ Refresh</button>
+    </div>
+  </div>
+
+  <div class="dash-body">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num" id="stat-students">—</div><div class="stat-label">Students</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-submissions">—</div><div class="stat-label">Total Saved</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-comics">—</div><div class="stat-label">Comics Used</div></div>
+    </div>
+
+    <div class="filters">
+      <span class="filter-label">Filter:</span>
+      <input type="text" id="filter-name" placeholder="Student name…" oninput="renderTable()" />
+      <select id="filter-comic" onchange="renderTable()">
+        <option value="">All comics</option>
+        <option value="videogame">Video Game</option>
+        <option value="soccer">Soccer Window</option>
+        <option value="mousefood">Mouse & Food</option>
+        <option value="ufo">UFO</option>
+        <option value="laundromat">Laundromat</option>
+        <option value="dogwalk">Dog Walk</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Comic</th>
+            <th>Bubbles Filled</th>
+            <th>Last Saved</th>
+            <th>View</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr class="empty-row"><td colspan="5">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════════ MODAL ═════════════ -->
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">Student Work</h2>
+      <button class="btn-close" onclick="closeModal()">✕ Close</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const SUPA_URL = 'https://lhmwtfyceilgndpygivj.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxobXd0ZnljZWlsZ25kcHlnaXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzk5MDIsImV4cCI6MjA5MTcxNTkwMn0.0uIXyctHMfTN4doWYn2JJ260swD5b-t0T-oDMSIPtBU';
+const DASHBOARD_PASSWORD = 'galileo2026';
+
+const COMICS = {
+  videogame: { title: 'Video Game', file: 'comicvideogame.jpg', bubbles: [
+    {x:22,y:9,w:28,h:14},{x:38,y:6,w:20,h:10},{x:68,y:7,w:22,h:13},{x:82,y:17,w:14,h:9},
+    {x:10,y:60,w:18,h:11},{x:25,y:55,w:18,h:10},{x:72,y:58,w:22,h:13},{x:82,y:72,w:14,h:9}
+  ]},
+  soccer: { title: 'Soccer Window', file: 'comicsoccerwindow.jpg', bubbles: [
+    {x:22,y:7,w:28,h:14},{x:65,y:7,w:26,h:14},{x:62,y:33,w:30,h:13},
+    {x:30,y:56,w:22,h:11},{x:70,y:56,w:22,h:12},{x:28,y:80,w:28,h:12},{x:68,y:80,w:22,h:12}
+  ]},
+  mousefood: { title: 'Mouse & Food', file: 'comicmousefood.jpg', bubbles: [
+    {x:14,y:8,w:22,h:16},{x:30,y:5,w:20,h:13},{x:62,y:5,w:22,h:14},{x:78,y:9,w:18,h:12},
+    {x:10,y:62,w:20,h:13},{x:34,y:56,w:22,h:14},{x:26,y:73,w:22,h:12},{x:68,y:58,w:22,h:14}
+  ]},
+  ufo: { title: 'UFO', file: 'comicufo.jpg', bubbles: [
+    {x:18,y:9,w:30,h:16},{x:72,y:7,w:24,h:14},{x:16,y:62,w:28,h:14},
+    {x:34,y:68,w:20,h:10},{x:68,y:60,w:24,h:12},{x:75,y:72,w:20,h:11}
+  ]},
+  laundromat: { title: 'Laundromat', file: 'comiclaundryshower.jpg', bubbles: [
+    {x:22,y:8,w:24,h:14},{x:72,y:7,w:22,h:14},{x:30,y:66,w:28,h:15}
+  ]},
+  dogwalk: { title: 'Dog Walk', file: 'comicbookdogwalk.jpg', bubbles: [
+    {x:22,y:7,w:26,h:14},{x:72,y:7,w:24,h:14},{x:38,y:37,w:26,h:12},{x:68,y:35,w:20,h:10},
+    {x:16,y:70,w:26,h:13},{x:75,y:70,w:20,h:13},{x:82,y:82,w:16,h:10}
+  ]}
+};
+
+let allRows = [];
+
+function login() {
+  const pw = document.getElementById('pw-input').value;
+  if (pw === DASHBOARD_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+async function loadData() {
+  document.getElementById('table-body').innerHTML = '<tr class="empty-row"><td colspan="5">Loading…</td></tr>';
+  try {
+    const rows = await supaFetch('/rest/v1/comic_dialogues?select=*&order=updated_at.desc');
+    allRows = rows;
+    updateStats();
+    renderTable();
+    document.getElementById('last-refresh').textContent = 'Updated ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    document.getElementById('table-body').innerHTML = `<tr class="empty-row"><td colspan="5">Error loading data: ${e.message}</td></tr>`;
+  }
+}
+
+function updateStats() {
+  const students = new Set(allRows.map(r => r.student_name)).size;
+  const comics = new Set(allRows.map(r => r.comic_id)).size;
+  document.getElementById('stat-students').textContent = students;
+  document.getElementById('stat-submissions').textContent = allRows.length;
+  document.getElementById('stat-comics').textContent = comics;
+}
+
+function renderTable() {
+  const nameFilter = document.getElementById('filter-name').value.toLowerCase();
+  const comicFilter = document.getElementById('filter-comic').value;
+
+  let rows = allRows.filter(r => {
+    if (nameFilter && !r.student_name.toLowerCase().includes(nameFilter)) return false;
+    if (comicFilter && r.comic_id !== comicFilter) return false;
+    return true;
+  });
+
+  const tbody = document.getElementById('table-body');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No submissions yet.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(r => {
+    const filled = (r.bubble_texts || []).filter(t => t && t.trim()).length;
+    const total = (r.bubble_texts || []).length;
+    const ct = COMICS[r.comic_id];
+    const date = new Date(r.updated_at).toLocaleDateString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    return `<tr>
+      <td><span class="student-name">${esc(r.student_name)}</span></td>
+      <td><span class="comic-badge">${ct ? ct.title : r.comic_id}</span></td>
+      <td>${filled} / ${total} filled</td>
+      <td class="time-cell">${date}</td>
+      <td><button class="btn-view" onclick='viewWork(${JSON.stringify(r)})'>👁 View</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function viewWork(row) {
+  const ct = COMICS[row.comic_id];
+  if (!ct) return;
+
+  document.getElementById('modal-title').textContent = `${row.student_name} — ${ct.title}`;
+
+  const saved = row.bubble_texts || [];
+
+  const items = saved.map((text, i) => `
+    <div class="dialogue-item">
+      <div class="bubble-num">${i+1}</div>
+      <div class="${text && text.trim() ? 'bubble-text' : 'bubble-empty'}">${text && text.trim() ? esc(text) : '(empty)'}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-comic-wrap" id="modal-comic-wrap">
+      <img id="modal-img" src="${ct.file}" alt="${ct.title}" onload="renderModalBubbles('${row.comic_id}', ${JSON.stringify(saved).replace(/'/g,'&#39;')})" />
+    </div>
+    <div class="dialogue-list">${items}</div>
+  `;
+
+  document.getElementById('modal-overlay').classList.add('open');
+  // Try rendering now if already cached
+  const img = document.getElementById('modal-img');
+  if (img.complete && img.naturalWidth) renderModalBubbles(row.comic_id, saved);
+}
+
+function renderModalBubbles(comicId, saved) {
+  const ct = COMICS[comicId];
+  const wrap = document.getElementById('modal-comic-wrap');
+  wrap.querySelectorAll('.bubble-overlay').forEach(el => el.remove());
+  ct.bubbles.forEach((b, i) => {
+    if (!saved[i] || !saved[i].trim()) return;
+    const div = document.createElement('div');
+    div.className = 'bubble-overlay';
+    div.style.left = b.x + '%';
+    div.style.top = b.y + '%';
+    div.style.width = b.w + '%';
+    div.style.height = b.h + '%';
+    div.innerHTML = `<span>${esc(saved[i])}</span>`;
+    wrap.appendChild(div);
+  });
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function supaFetch(path, method='GET', body=null) {
+  const opts = {
+    method,
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+      'Content-Type': 'application/json'
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(SUPA_URL + path, opts);
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+</script>
+</body>
+</html>

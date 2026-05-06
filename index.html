@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comic Creator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&display=swap');
+
+  :root {
+    --ink: #1a1a2e;
+    --paper: #fdf6e3;
+    --yellow: #ffe566;
+    --red: #e63946;
+    --blue: #457b9d;
+    --green: #2d6a4f;
+    --panel-border: 3px solid #1a1a2e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    font-family: 'Comic Neue', cursive;
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ─── SIGN-IN SCREEN ─── */
+  #signin-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper);
+    padding: 2rem;
+  }
+
+  .signin-bubble {
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: 50px;
+    padding: 2.5rem 3rem;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 8px 8px 0 var(--ink);
+    text-align: center;
+    position: relative;
+  }
+
+  .signin-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 28px solid var(--ink);
+  }
+  .signin-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-top: 22px solid white;
+    z-index: 1;
+  }
+
+  .signin-title {
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    letter-spacing: 3px;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+
+  .signin-sub {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 1.75rem;
+    font-weight: 700;
+  }
+
+  .signin-label {
+    display: block;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+  }
+
+  .signin-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    font-family: 'Comic Neue', cursive;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: #fffef5;
+    outline: none;
+    margin-bottom: 1.25rem;
+    transition: box-shadow 0.15s;
+  }
+  .signin-input:focus {
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+
+  .btn-start {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--yellow);
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    font-family: 'Bangers', cursive;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-start:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
+  .btn-start:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
+
+  .mascot {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  /* ─── COMIC PICKER ─── */
+  #picker-screen {
+    display: none;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .screen-header {
+    font-family: 'Bangers', cursive;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.25rem;
+  }
+  .screen-sub { color: #555; font-weight: 700; margin-bottom: 2rem; }
+
+  .comic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .comic-card {
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 5px 5px 0 var(--ink);
+    background: white;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .comic-card:hover { transform: translate(-3px,-3px); box-shadow: 8px 8px 0 var(--ink); }
+
+  .comic-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    border-bottom: 3px solid var(--ink);
+  }
+
+  .comic-card-title {
+    font-family: 'Bangers', cursive;
+    font-size: 1.3rem;
+    padding: 0.6rem 1rem;
+    letter-spacing: 1px;
+    background: var(--yellow);
+  }
+
+  .comic-card.done .comic-card-title { background: #c8f7c5; }
+  .done-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--green);
+    padding: 0 1rem 0.5rem;
+  }
+
+  /* ─── EDITOR SCREEN ─── */
+  #editor-screen {
+    display: none;
+    padding: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .editor-topbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-back {
+    background: white;
+    border: 3px solid var(--ink);
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-family: 'Bangers', cursive;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    letter-spacing: 1px;
+  }
+  .btn-back:hover { background: #eee; }
+
+  .editor-title {
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    flex: 1;
+  }
+
+  .btn-save {
+    background: var(--yellow);
+    border: 3px solid var(--ink);
+    border-radius: 10px;
+    padding: 0.5rem 1.4rem;
+    font-family: 'Bangers', cursive;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink);
+    letter-spacing: 1px;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-save:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
+  .save-status {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--green);
+    min-width: 80px;
+  }
+
+  /* ─── COMIC PANEL WRAPPER ─── */
+  .comic-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    border: 4px solid var(--ink);
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+
+  .comic-wrapper img {
+    width: 100%;
+    display: block;
+    user-select: none;
+  }
+
+  /* ─── BUBBLE INPUTS ─── */
+  .bubble-input-wrap {
+    position: absolute;
+    transform: translate(-50%, -50%);
+  }
+
+  .bubble-textarea {
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    font-size: clamp(0.55rem, 1.4vw, 0.85rem);
+    color: #111;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.25;
+    padding: 6px;
+    word-break: break-word;
+    overflow: hidden;
+    cursor: text;
+  }
+
+  /* hint text */
+  .bubble-textarea::placeholder {
+    color: rgba(0,0,0,0.25);
+    font-style: italic;
+  }
+
+  /* ─── SAVE TOAST ─── */
+  #toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--ink);
+    color: var(--yellow);
+    font-family: 'Bangers', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    transition: transform 0.3s;
+    z-index: 999;
+    pointer-events: none;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  .instructions-banner {
+    background: #e8f4fd;
+    border: 2px dashed var(--blue);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    font-weight: 700;
+    color: var(--blue);
+    font-size: 0.9rem;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SIGN-IN ═══════════════ -->
+<div id="signin-screen">
+  <span class="mascot">💬</span>
+  <div class="signin-bubble">
+    <div class="signin-title">COMIC CREATOR</div>
+    <div class="signin-sub">Write the dialogue. Tell the story.</div>
+    <label class="signin-label" for="name-input">What's your name?</label>
+    <input class="signin-input" id="name-input" type="text" placeholder="Type your name here..." autocomplete="off" />
+    <button class="btn-start" onclick="startApp()">LET'S GO! →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ COMIC PICKER ═══════════════ -->
+<div id="picker-screen">
+  <div class="screen-header" id="picker-greeting">Choose a Comic</div>
+  <div class="screen-sub">Click a comic to start writing dialogue!</div>
+  <div class="comic-grid" id="comic-grid"></div>
+</div>
+
+<!-- ═══════════════ EDITOR ═══════════════ -->
+<div id="editor-screen">
+  <div class="editor-topbar">
+    <button class="btn-back" onclick="showPicker()">← Back</button>
+    <div class="editor-title" id="editor-title">Comic</div>
+    <span class="save-status" id="save-status"></span>
+    <button class="btn-save" onclick="saveWork()">💾 Save</button>
+  </div>
+  <div class="instructions-banner">
+    ✏️ Click inside each speech bubble and type your dialogue. Press <strong>Save</strong> when you're done!
+  </div>
+  <div class="comic-wrapper" id="comic-wrapper">
+    <img id="comic-img" src="" alt="comic" />
+    <!-- bubbles injected here -->
+  </div>
+</div>
+
+<div id="toast">✅ Saved!</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  SUPABASE CONFIG
+// ═══════════════════════════════════════════
+const SUPA_URL = 'https://lhmwtfyceilgndpygivj.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxobXd0ZnljZWlsZ25kcHlnaXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzk5MDIsImV4cCI6MjA5MTcxNTkwMn0.0uIXyctHMfTN4doWYn2JJ260swD5b-t0T-oDMSIPtBU';
+
+async function supaFetch(path, method='GET', body=null) {
+  const opts = {
+    method,
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation,resolution=merge-duplicates'
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(SUPA_URL + path, opts);
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+// ═══════════════════════════════════════════
+//  COMIC DEFINITIONS
+//  Bubbles: { x, y, w, h } as % of image size
+//  (measured relative to the rendered image)
+// ═══════════════════════════════════════════
+const COMICS = [
+  {
+    id: 'videogame',
+    title: 'Video Game',
+    file: 'comicvideogame.jpg',
+    bubbles: [
+      // Panel 1 (top-left)
+      { x: 22, y: 9,  w: 28, h: 14 },  // left person bubble
+      { x: 38, y: 6,  w: 20, h: 10 },  // right person bubble
+      // Panel 2 (top-right)
+      { x: 68, y: 7,  w: 22, h: 13 },  // adult bubble
+      { x: 82, y: 17, w: 14, h: 9  },  // small bubble
+      // Panel 3 (bottom-left)
+      { x: 10, y: 60, w: 18, h: 11 },  // left bubble
+      { x: 25, y: 55, w: 18, h: 10 },  // middle bubble
+      // Panel 4 (bottom-right)
+      { x: 72, y: 58, w: 22, h: 13 },  // large bubble
+      { x: 82, y: 72, w: 14, h: 9  },  // lower bubble
+    ]
+  },
+  {
+    id: 'soccer',
+    title: 'Soccer Window',
+    file: 'comicsoccerwindow.jpg',
+    bubbles: [
+      // Panel 1
+      { x: 22, y: 7,  w: 28, h: 14 },
+      { x: 65, y: 7,  w: 26, h: 14 },
+      // Panel 2
+      { x: 62, y: 33, w: 30, h: 13 },
+      // Panel 3
+      { x: 30, y: 56, w: 22, h: 11 },
+      { x: 70, y: 56, w: 22, h: 12 },
+      // Panel 4
+      { x: 28, y: 80, w: 28, h: 12 },
+      { x: 68, y: 80, w: 22, h: 12 },
+    ]
+  },
+  {
+    id: 'mousefood',
+    title: 'Mouse & Food',
+    file: 'comicmousefood.jpg',
+    bubbles: [
+      // Panel top-left
+      { x: 14, y: 8,  w: 22, h: 16 },
+      { x: 30, y: 5,  w: 20, h: 13 },
+      // Panel top-right
+      { x: 62, y: 5,  w: 22, h: 14 },
+      { x: 78, y: 9,  w: 18, h: 12 },
+      // Panel bottom-left
+      { x: 10, y: 62, w: 20, h: 13 },
+      { x: 34, y: 56, w: 22, h: 14 },
+      { x: 26, y: 73, w: 22, h: 12 },
+      // Panel bottom-right
+      { x: 68, y: 58, w: 22, h: 14 },
+    ]
+  },
+  {
+    id: 'ufo',
+    title: 'UFO',
+    file: 'comicufo.jpg',
+    bubbles: [
+      // Panel top-left
+      { x: 18, y: 9,  w: 30, h: 16 },
+      // Panel top-right
+      { x: 72, y: 7,  w: 24, h: 14 },
+      // Panel bottom-left
+      { x: 16, y: 62, w: 28, h: 14 },
+      { x: 34, y: 68, w: 20, h: 10 },
+      // Panel bottom-right
+      { x: 68, y: 60, w: 24, h: 12 },
+      { x: 75, y: 72, w: 20, h: 11 },
+    ]
+  },
+  {
+    id: 'laundromat',
+    title: 'Laundromat',
+    file: 'comiclaundryshower.jpg',
+    bubbles: [
+      // Top panel (wide)
+      { x: 22, y: 8,  w: 24, h: 14 },
+      { x: 72, y: 7,  w: 22, h: 14 },
+      // Bottom-left panel
+      { x: 30, y: 66, w: 28, h: 15 },
+      // Bottom-right panel — no clear bubble, skip
+    ]
+  },
+  {
+    id: 'dogwalk',
+    title: 'Dog Walk',
+    file: 'comicbookdogwalk.jpg',
+    bubbles: [
+      // Row 1 left
+      { x: 22, y: 7,  w: 26, h: 14 },
+      // Row 1 right
+      { x: 72, y: 7,  w: 24, h: 14 },
+      // Row 2 (wide panel)
+      { x: 38, y: 37, w: 26, h: 12 },
+      { x: 68, y: 35, w: 20, h: 10 },
+      // Row 3 left
+      { x: 16, y: 70, w: 26, h: 13 },
+      // Row 3 right
+      { x: 75, y: 70, w: 20, h: 13 },
+      { x: 82, y: 82, w: 16, h: 10 },
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+let studentName = '';
+let currentComic = null;
+let savedWork = {};  // { comicId: { bubbles: [...texts], saved_at } }
+
+// ═══════════════════════════════════════════
+//  SIGN-IN
+// ═══════════════════════════════════════════
+document.getElementById('name-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startApp();
+});
+
+async function startApp() {
+  const val = document.getElementById('name-input').value.trim();
+  if (!val) { alert('Please enter your name!'); return; }
+  studentName = val;
+  await loadExistingWork();
+  showPicker();
+}
+
+async function loadExistingWork() {
+  try {
+    const rows = await supaFetch(
+      `/rest/v1/comic_dialogues?student_name=eq.${encodeURIComponent(studentName)}&select=comic_id,bubble_texts,updated_at`
+    );
+    rows.forEach(r => {
+      savedWork[r.comic_id] = { bubbles: r.bubble_texts, saved_at: r.updated_at };
+    });
+  } catch(e) { console.warn('Could not load saved work', e); }
+}
+
+// ═══════════════════════════════════════════
+//  PICKER
+// ═══════════════════════════════════════════
+function showPicker() {
+  document.getElementById('signin-screen').style.display = 'none';
+  document.getElementById('editor-screen').style.display = 'none';
+  document.getElementById('picker-screen').style.display = 'block';
+  document.getElementById('picker-greeting').textContent = `${studentName}'s Comics`;
+
+  const grid = document.getElementById('comic-grid');
+  grid.innerHTML = '';
+  COMICS.forEach(comic => {
+    const done = savedWork[comic.id];
+    const card = document.createElement('div');
+    card.className = 'comic-card' + (done ? ' done' : '');
+    card.innerHTML = `
+      <img src="${comic.file}" alt="${comic.title}" loading="lazy" />
+      <div class="comic-card-title">${comic.title}</div>
+      ${done ? '<div class="done-badge">✅ Saved</div>' : '<div class="done-badge">✏️ Not started</div>'}
+    `;
+    card.onclick = () => openEditor(comic);
+    grid.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════
+//  EDITOR
+// ═══════════════════════════════════════════
+function openEditor(comic) {
+  currentComic = comic;
+  document.getElementById('picker-screen').style.display = 'none';
+  document.getElementById('editor-screen').style.display = 'block';
+  document.getElementById('editor-title').textContent = comic.title;
+  document.getElementById('save-status').textContent = '';
+
+  const img = document.getElementById('comic-img');
+  const wrapper = document.getElementById('comic-wrapper');
+
+  // Remove old bubble inputs
+  wrapper.querySelectorAll('.bubble-input-wrap').forEach(el => el.remove());
+
+  img.src = comic.file;
+  img.onload = () => renderBubbles(comic);
+  if (img.complete && img.naturalWidth) renderBubbles(comic);
+}
+
+function renderBubbles(comic) {
+  const wrapper = document.getElementById('comic-wrapper');
+  const img = document.getElementById('comic-img');
+  const w = img.offsetWidth;
+  const h = img.offsetHeight;
+
+  const saved = savedWork[comic.id] ? savedWork[comic.id].bubbles : [];
+
+  comic.bubbles.forEach((b, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'bubble-input-wrap';
+    wrap.style.left   = b.x + '%';
+    wrap.style.top    = b.y + '%';
+    wrap.style.width  = b.w + '%';
+    wrap.style.height = b.h + '%';
+
+    const ta = document.createElement('textarea');
+    ta.className = 'bubble-textarea';
+    ta.placeholder = '...';
+    ta.value = saved[i] || '';
+    ta.setAttribute('data-idx', i);
+    wrap.appendChild(ta);
+    wrapper.appendChild(wrap);
+  });
+}
+
+// ═══════════════════════════════════════════
+//  SAVE
+// ═══════════════════════════════════════════
+async function saveWork() {
+  const wrapper = document.getElementById('comic-wrapper');
+  const texts = [];
+  currentComic.bubbles.forEach((_, i) => {
+    const ta = wrapper.querySelector(`textarea[data-idx="${i}"]`);
+    texts.push(ta ? ta.value : '');
+  });
+
+  document.getElementById('save-status').textContent = 'Saving…';
+
+  try {
+    // Upsert by student_name + comic_id
+    await supaFetch('/rest/v1/comic_dialogues?on_conflict=student_name,comic_id', 'POST', {
+      student_name: studentName,
+      comic_id: currentComic.id,
+      comic_title: currentComic.title,
+      bubble_texts: texts,
+      updated_at: new Date().toISOString()
+    });
+    // Mark done
+    savedWork[currentComic.id] = { bubbles: texts, saved_at: new Date().toISOString() };
+    document.getElementById('save-status').textContent = '✅ Saved!';
+    showToast('Saved! Great work! 🎉');
+  } catch(e) {
+    document.getElementById('save-status').textContent = '❌ Error';
+    alert('Could not save: ' + e.message + '\n\nMake sure the comic_dialogues table exists in Supabase.');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Re-render bubbles if window resizes
+window.addEventListener('resize', () => {
+  if (currentComic && document.getElementById('editor-screen').style.display !== 'none') {
+    renderBubbles(currentComic);
+  }
+});
+</script>
+</body>
+</html>

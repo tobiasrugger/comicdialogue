@@ -346,7 +346,10 @@ function renderTable() {
     return;
   }
 
-  tbody.innerHTML = rows.map(r => {
+  // Store filtered rows for lookup by index
+  window._tableRows = rows;
+
+  tbody.innerHTML = rows.map((r, idx) => {
     const filled = (r.bubble_texts || []).filter(t => t && t.trim()).length;
     const total = (r.bubble_texts || []).length;
     const ct = COMICS[r.comic_id];
@@ -357,20 +360,21 @@ function renderTable() {
       <td>${filled} / ${total} filled</td>
       <td class="time-cell">${date}</td>
       <td style="display:flex;gap:0.4rem">
-        <button class="btn-view" onclick='viewWork(${JSON.stringify(r)})'>👁 View</button>
-        <button class="btn-view" style="background:#e63946" onclick='deleteRow("${r.id}")'>🗑</button>
+        <button class="btn-view" onclick="viewWork(${idx})">👁 View</button>
+        <button class="btn-view" style="background:#e63946" onclick="deleteRow('${r.id}')">🗑</button>
       </td>
     </tr>`;
   }).join('');
 }
 
-function viewWork(row) {
+function viewWork(idx) {
+  const row = window._tableRows[idx];
+  if (!row) return;
   const ct = COMICS[row.comic_id];
   if (!ct) return;
 
   document.getElementById('modal-title').textContent = `${row.student_name} — ${ct.title}`;
 
-  // bubble_texts may come back as string or array depending on Supabase client
   let saved = row.bubble_texts || [];
   if (typeof saved === 'string') { try { saved = JSON.parse(saved); } catch(e) { saved = []; } }
 
@@ -414,7 +418,11 @@ function renderModalBubbles(comicId, saved) {
 async function deleteRow(id) {
   if (!confirm('Delete this entry?')) return;
   try {
-    await supaFetch(`/rest/v1/comic_dialogues?id=eq.${id}`, 'DELETE');
+    const opts = {
+      method: 'DELETE',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    };
+    await fetch(SUPA_URL + `/rest/v1/comic_dialogues?id=eq.${id}`, opts);
     allRows = allRows.filter(r => r.id !== id);
     updateStats();
     renderTable();

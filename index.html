@@ -319,6 +319,17 @@
   }
   #toast.show { transform: translateX(-50%) translateY(0); }
 
+  .teacher-link {
+    display: block;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.75rem;
+    color: #bbb;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+  .teacher-link:hover { color: #888; }
+
   .instructions-banner {
     background: #e8f4fd;
     border: 2px dashed var(--blue);
@@ -371,6 +382,8 @@
 </div>
 
 <div id="toast">✅ Saved!</div>
+
+<a class="teacher-link" href="comic_dialogue_dashboard.html">teacher dashboard</a>
 
 <script>
 // ═══════════════════════════════════════════
@@ -522,6 +535,12 @@ let savedWork = {};  // { comicId: { bubbles: [...texts], saved_at } }
 document.getElementById('name-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') startApp();
 });
+
+// Auto-login as teacher if ?teacher=1 in URL
+if (new URLSearchParams(window.location.search).get('teacher') === '1') {
+  studentName = 'Teacher Preview';
+  loadExistingWork().then(() => showPicker());
+}
 
 async function startApp() {
   const val = document.getElementById('name-input').value.trim();

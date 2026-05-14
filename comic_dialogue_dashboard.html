@@ -355,7 +355,10 @@ function renderTable() {
       <td><span class="comic-badge">${ct ? ct.title : r.comic_id}</span></td>
       <td>${filled} / ${total} filled</td>
       <td class="time-cell">${date}</td>
-      <td><button class="btn-view" onclick='viewWork(${JSON.stringify(r)})'>👁 View</button></td>
+      <td style="display:flex;gap:0.4rem">
+        <button class="btn-view" onclick='viewWork(${JSON.stringify(r)})'>👁 View</button>
+        <button class="btn-view" style="background:#e63946" onclick='deleteRow("${r.id}")'>🗑</button>
+      </td>
     </tr>`;
   }).join('');
 }
@@ -366,7 +369,9 @@ function viewWork(row) {
 
   document.getElementById('modal-title').textContent = `${row.student_name} — ${ct.title}`;
 
-  const saved = row.bubble_texts || [];
+  // bubble_texts may come back as string or array depending on Supabase client
+  let saved = row.bubble_texts || [];
+  if (typeof saved === 'string') { try { saved = JSON.parse(saved); } catch(e) { saved = []; } }
 
   const items = saved.map((text, i) => `
     <div class="dialogue-item">
@@ -403,6 +408,16 @@ function renderModalBubbles(comicId, saved) {
     div.innerHTML = `<span>${esc(saved[i])}</span>`;
     wrap.appendChild(div);
   });
+}
+
+async function deleteRow(id) {
+  if (!confirm('Delete this entry?')) return;
+  try {
+    await supaFetch(`/rest/v1/comic_dialogues?id=eq.${id}`, 'DELETE');
+    allRows = allRows.filter(r => r.id !== id);
+    updateStats();
+    renderTable();
+  } catch(e) { alert('Could not delete: ' + e.message); }
 }
 
 function closeModal(e) {

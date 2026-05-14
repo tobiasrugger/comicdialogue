@@ -629,7 +629,7 @@ async function saveWork() {
 
   try {
     // Upsert by student_name + comic_id
-    await supaFetch('/rest/v1/comic_dialogues?on_conflict=student_name,comic_id', 'POST', {
+    await supaFetch('/rest/v1/comic_dialogues', 'POST', {
       student_name: studentName,
       comic_id: currentComic.id,
       comic_title: currentComic.title,
@@ -642,7 +642,7 @@ async function saveWork() {
     showToast('Saved! Great work! 🎉');
   } catch(e) {
     document.getElementById('save-status').textContent = '❌ Error';
-    alert('Could not save: ' + e.message + '\n\nMake sure the comic_dialogues table exists in Supabase.');
+    alert('Could not save: ' + e.message);
   }
 }
 
@@ -653,11 +653,31 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// Re-render bubbles if window resizes
+// Re-render bubbles on resize - preserve typed text
 window.addEventListener('resize', () => {
-  if (currentComic && document.getElementById('editor-screen').style.display !== 'none') {
-    renderBubbles(currentComic);
-  }
+  if (!currentComic || document.getElementById('editor-screen').style.display === 'none') return;
+  const wrapper = document.getElementById('comic-wrapper');
+  const currentTexts = [];
+  currentComic.bubbles.forEach((_, i) => {
+    const ta = wrapper.querySelector(`textarea[data-idx="${i}"]`);
+    currentTexts.push(ta ? ta.value : '');
+  });
+  wrapper.querySelectorAll('.bubble-input-wrap').forEach(el => el.remove());
+  currentComic.bubbles.forEach((b, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'bubble-input-wrap';
+    wrap.style.left   = b.x + '%';
+    wrap.style.top    = b.y + '%';
+    wrap.style.width  = b.w + '%';
+    wrap.style.height = b.h + '%';
+    const ta = document.createElement('textarea');
+    ta.className = 'bubble-textarea';
+    ta.placeholder = '...';
+    ta.value = currentTexts[i] || '';
+    ta.setAttribute('data-idx', i);
+    wrap.appendChild(ta);
+    wrapper.appendChild(wrap);
+  });
 });
 </script>
 </body>

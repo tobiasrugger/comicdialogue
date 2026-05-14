@@ -602,9 +602,13 @@ function openEditor(comic) {
   // Remove old bubble inputs
   wrapper.querySelectorAll('.bubble-input-wrap').forEach(el => el.remove());
 
+  img.onload = null; // clear any previous handler first
   img.src = comic.file;
-  img.onload = () => renderBubbles(comic);
-  if (img.complete && img.naturalWidth) renderBubbles(comic);
+  if (img.complete && img.naturalWidth) {
+    renderBubbles(comic);
+  } else {
+    img.onload = () => { img.onload = null; renderBubbles(comic); };
+  }
 }
 
 function renderBubbles(comic) {

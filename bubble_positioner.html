@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bubble Positioner</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: monospace; background: #1a1a2e; color: #e8e8f0; min-height: 100vh; padding: 1.5rem; }
+
+  h1 { font-size: 1.4rem; color: #ffe566; margin-bottom: 0.25rem; }
+  .subtitle { color: #7070a0; font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+  .controls {
+    display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  select, button {
+    font-family: monospace; font-size: 0.9rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 7px; border: 2px solid #444; cursor: pointer;
+  }
+
+  select { background: #16161d; color: #e8e8f0; }
+
+  .btn-mode { background: #16161d; color: #7070a0; }
+  .btn-mode.active { background: #ffe566; color: #1a1a2e; border-color: #ffe566; font-weight: bold; }
+
+  .btn-undo { background: #16161d; color: #e05c6a; border-color: #e05c6a; }
+  .btn-undo:hover { background: #e05c6a; color: white; }
+
+  .btn-clear { background: #16161d; color: #888; border-color: #444; }
+  .btn-clear:hover { background: #333; }
+
+  .btn-copy { background: #ffe566; color: #1a1a2e; border-color: #ffe566; font-weight: bold; font-size: 1rem; padding: 0.5rem 1.4rem; }
+  .btn-copy:hover { background: #ffd700; }
+
+  .instructions {
+    background: #16161d; border: 1px solid #333; border-radius: 8px;
+    padding: 0.75rem 1rem; margin-bottom: 1rem;
+    font-size: 0.82rem; color: #a0a0c0; line-height: 1.7;
+  }
+  .instructions strong { color: #ffe566; }
+
+  .mode-indicator {
+    font-size: 0.82rem; padding: 0.3rem 0.7rem;
+    border-radius: 5px; background: #222; border: 1px solid #444;
+  }
+  .mode-indicator.center { color: #5b8dee; border-color: #5b8dee; }
+  .mode-indicator.size { color: #52c878; border-color: #52c878; }
+
+  /* ── CANVAS AREA ── */
+  .canvas-area {
+    position: relative;
+    display: inline-block;
+    cursor: crosshair;
+    border: 2px solid #444;
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 100%;
+  }
+
+  .canvas-area img {
+    display: block;
+    max-width: 800px;
+    width: 100%;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* bubble overlays */
+  .bubble-box {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border: 2px dashed #ffe566;
+    border-radius: 50%;
+    pointer-events: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .bubble-box .bnum {
+    background: #ffe566; color: #1a1a2e;
+    font-weight: bold; font-size: 0.75rem;
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+
+  /* click dot */
+  .click-dot {
+    position: absolute;
+    width: 10px; height: 10px;
+    background: #e05c6a;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  /* pending center marker */
+  .pending-center {
+    position: absolute;
+    width: 12px; height: 12px;
+    background: #5b8dee;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  /* ── OUTPUT ── */
+  .output-section { margin-top: 1.5rem; }
+  .output-section h2 { font-size: 1rem; color: #ffe566; margin-bottom: 0.5rem; }
+
+  .bubble-list {
+    background: #16161d; border: 1px solid #333; border-radius: 8px;
+    padding: 0.75rem 1rem; margin-bottom: 1rem;
+    font-size: 0.82rem; line-height: 1.8; max-height: 200px; overflow-y: auto;
+  }
+
+  .bubble-row { display: flex; gap: 1rem; align-items: center; }
+  .bubble-row span { color: #7070a0; }
+  .bubble-row .coords { color: #52c878; }
+  .bubble-row .incomplete { color: #e05c6a; }
+
+  textarea {
+    width: 100%; height: 280px;
+    background: #0e0e12; color: #52c878;
+    border: 1px solid #333; border-radius: 8px;
+    padding: 0.75rem; font-family: monospace; font-size: 0.78rem;
+    line-height: 1.5; resize: vertical;
+  }
+
+  .copy-row { display: flex; gap: 0.75rem; align-items: center; margin-top: 0.75rem; }
+  .copy-confirm { color: #52c878; font-size: 0.85rem; opacity: 0; transition: opacity 0.3s; }
+  .copy-confirm.show { opacity: 1; }
+
+  .stat-bar {
+    display: flex; gap: 1.5rem; margin-bottom: 1rem;
+    font-size: 0.82rem; color: #7070a0;
+  }
+  .stat-bar span { color: #ffe566; }
+</style>
+</head>
+<body>
+
+<h1>🎯 Bubble Positioner</h1>
+<div class="subtitle">Click to place bubbles on each comic. Then copy the result and paste it to Claude.</div>
+
+<div class="instructions">
+  <strong>How it works:</strong><br>
+  1. Pick a comic from the dropdown<br>
+  2. Click the <strong>center</strong> of a speech bubble → then click the <strong>right edge</strong> of that same bubble (to set width)<br>
+  3. Repeat for every bubble — they'll be numbered in order<br>
+  4. Switch comics and repeat<br>
+  5. Hit <strong>Copy Full Array</strong> and paste it to Claude
+</div>
+
+<div class="controls">
+  <select id="comic-select" onchange="loadComic()">
+    <option value="videogame">Video Game</option>
+    <option value="soccer">Soccer Window</option>
+    <option value="mousefood">Mouse & Food</option>
+    <option value="ufo">UFO</option>
+    <option value="laundromat">Laundromat</option>
+    <option value="dogwalk">Dog Walk</option>
+  </select>
+  <div class="mode-indicator" id="mode-indicator">Click: CENTER</div>
+  <button class="btn-undo" onclick="undo()">↩ Undo</button>
+  <button class="btn-clear" onclick="clearComic()">✕ Clear This Comic</button>
+</div>
+
+<div class="stat-bar">
+  Bubbles placed: <span id="stat-count">0</span>
+  &nbsp;|&nbsp; Click next: <span id="stat-next">center of bubble #1</span>
+</div>
+
+<div class="canvas-area" id="canvas-area" onclick="handleClick(event)">
+  <img id="comic-img" src="" alt="comic" />
+</div>
+
+<div class="output-section">
+  <h2>Placed Bubbles — <span id="comic-name">Video Game</span></h2>
+  <div class="bubble-list" id="bubble-list">No bubbles placed yet.</div>
+
+  <h2>Full COMICS Array — paste this to Claude ↓</h2>
+  <textarea id="output-area" readonly></textarea>
+  <div class="copy-row">
+    <button class="btn-copy" onclick="copyOutput()">📋 Copy Full Array</button>
+    <span class="copy-confirm" id="copy-confirm">✅ Copied to clipboard!</span>
+  </div>
+</div>
+
+<script>
+// ── COMIC METADATA (files and display names only — no preset bubbles) ──
+const COMIC_META = {
+  videogame:   { title: 'Video Game',         file: 'comicvideogame.jpg' },
+  soccer:      { title: 'Soccer Window',      file: 'comicsoccerwindow.jpg' },
+  mousefood:   { title: 'Mouse & Food',       file: 'comicmousefood.jpg' },
+  ufo:         { title: 'UFO',                file: 'comicufo.jpg' },
+  laundromat:  { title: 'Laundromat',         file: 'comiclaundryshower.jpg' },
+  dogwalk:     { title: 'Dog Walk',           file: 'comicbookdogwalk.jpg' },
+};
+
+// ── STATE ──
+// allBubbles: { comicId: [ {x, y, w, h} ] }  — completed bubbles
+// pendingCenter: null | {x, y}               — waiting for edge click
+let allBubbles = {};
+let pendingCenter = null;
+let currentComic = 'videogame';
+
+Object.keys(COMIC_META).forEach(id => { allBubbles[id] = []; });
+
+// ── INIT ──
+loadComic();
+
+function loadComic() {
+  currentComic = document.getElementById('comic-select').value;
+  pendingCenter = null;
+  const meta = COMIC_META[currentComic];
+  document.getElementById('comic-img').src = meta.file;
+  document.getElementById('comic-name').textContent = meta.title;
+  document.getElementById('comic-img').onload = () => { renderOverlays(); updateUI(); };
+  if (document.getElementById('comic-img').complete) { renderOverlays(); updateUI(); }
+}
+
+// ── CLICK HANDLER ──
+function handleClick(e) {
+  const area = document.getElementById('canvas-area');
+  const img = document.getElementById('comic-img');
+  const rect = img.getBoundingClientRect();
+  const areaRect = area.getBoundingClientRect();
+
+  // Click position relative to image
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+
+  // As percentage of image
+  const px = (cx / rect.width) * 100;
+  const py = (cy / rect.height) * 100;
+
+  if (!pendingCenter) {
+    // First click: record center
+    pendingCenter = { x: px, y: py };
+    renderOverlays();
+    updateUI();
+  } else {
+    // Second click: compute width from distance to edge, height = width * 0.6
+    const dx = Math.abs(px - pendingCenter.x);
+    const dy = Math.abs(py - pendingCenter.y);
+    const w = Math.max(dx, 8) * 2;      // diameter = 2 * radius
+    // Estimate height: use vertical distance if larger, else 60% of w
+    const h = dy > 3 ? Math.max(dy, 5) * 2 : Math.round(w * 0.6);
+
+    allBubbles[currentComic].push({
+      x: Math.round(pendingCenter.x * 10) / 10,
+      y: Math.round(pendingCenter.y * 10) / 10,
+      w: Math.round(w * 10) / 10,
+      h: Math.round(h * 10) / 10,
+    });
+    pendingCenter = null;
+    renderOverlays();
+    updateUI();
+    updateOutput();
+  }
+}
+
+// ── RENDER OVERLAYS ──
+function renderOverlays() {
+  const area = document.getElementById('canvas-area');
+  const img = document.getElementById('comic-img');
+
+  // Remove old overlays
+  area.querySelectorAll('.bubble-box, .pending-center').forEach(el => el.remove());
+
+  const bubbles = allBubbles[currentComic];
+  bubbles.forEach((b, i) => {
+    const div = document.createElement('div');
+    div.className = 'bubble-box';
+    div.style.left = b.x + '%';
+    div.style.top = b.y + '%';
+    div.style.width = b.w + '%';
+    div.style.height = b.h + '%';
+    div.innerHTML = `<span class="bnum">${i + 1}</span>`;
+    area.appendChild(div);
+  });
+
+  // Pending center dot
+  if (pendingCenter) {
+    const dot = document.createElement('div');
+    dot.className = 'pending-center';
+    dot.style.left = pendingCenter.x + '%';
+    dot.style.top = pendingCenter.y + '%';
+    area.appendChild(dot);
+  }
+}
+
+// ── UNDO ──
+function undo() {
+  if (pendingCenter) {
+    pendingCenter = null;
+  } else {
+    allBubbles[currentComic].pop();
+  }
+  renderOverlays();
+  updateUI();
+  updateOutput();
+}
+
+// ── CLEAR ──
+function clearComic() {
+  if (!confirm(`Clear all bubbles for ${COMIC_META[currentComic].title}?`)) return;
+  allBubbles[currentComic] = [];
+  pendingCenter = null;
+  renderOverlays();
+  updateUI();
+  updateOutput();
+}
+
+// ── UPDATE UI ──
+function updateUI() {
+  const bubbles = allBubbles[currentComic];
+  const count = bubbles.length;
+  const nextNum = count + 1;
+
+  document.getElementById('stat-count').textContent = count;
+  document.getElementById('stat-next').textContent = pendingCenter
+    ? `right edge of bubble #${nextNum} (to set size)`
+    : `center of bubble #${nextNum}`;
+
+  const indicator = document.getElementById('mode-indicator');
+  if (pendingCenter) {
+    indicator.textContent = 'Click: RIGHT EDGE (set size)';
+    indicator.className = 'mode-indicator size';
+  } else {
+    indicator.textContent = 'Click: CENTER';
+    indicator.className = 'mode-indicator center';
+  }
+
+  // Bubble list
+  const list = document.getElementById('bubble-list');
+  if (!bubbles.length) {
+    list.innerHTML = 'No bubbles placed yet.';
+    return;
+  }
+  list.innerHTML = bubbles.map((b, i) => `
+    <div class="bubble-row">
+      <span>#${i+1}</span>
+      <span class="coords">x:${b.x}% y:${b.y}% w:${b.w}% h:${b.h}%</span>
+    </div>
+  `).join('');
+}
+
+// ── GENERATE OUTPUT ──
+function updateOutput() {
+  const lines = ['const COMICS = ['];
+
+  Object.keys(COMIC_META).forEach((id, idx, arr) => {
+    const meta = COMIC_META[id];
+    const bubbles = allBubbles[id];
+    lines.push(`  {`);
+    lines.push(`    id: '${id}',`);
+    lines.push(`    title: '${meta.title}',`);
+    lines.push(`    file: '${meta.file}',`);
+    lines.push(`    bubbles: [`);
+    if (bubbles.length === 0) {
+      lines.push(`      // No bubbles placed yet`);
+    } else {
+      bubbles.forEach((b, i) => {
+        lines.push(`      { x: ${b.x}, y: ${b.y}, w: ${b.w}, h: ${b.h} },  // bubble ${i+1}`);
+      });
+    }
+    lines.push(`    ]`);
+    lines.push(`  }${idx < arr.length - 1 ? ',' : ''}`);
+  });
+
+  lines.push('];');
+  document.getElementById('output-area').value = lines.join('\n');
+}
+
+// ── COPY ──
+function copyOutput() {
+  const ta = document.getElementById('output-area');
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(() => {
+    const c = document.getElementById('copy-confirm');
+    c.classList.add('show');
+    setTimeout(() => c.classList.remove('show'), 2500);
+  });
+}
+
+// Init output
+updateOutput();
+</script>
+</body>
+</html>

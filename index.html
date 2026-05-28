@@ -109,9 +109,7 @@
     margin-bottom: 1.25rem;
     transition: box-shadow 0.15s;
   }
-  .signin-input:focus {
-    box-shadow: 4px 4px 0 var(--ink);
-  }
+  .signin-input:focus { box-shadow: 4px 4px 0 var(--ink); }
 
   .btn-start {
     width: 100%;
@@ -129,142 +127,57 @@
   .btn-start:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
   .btn-start:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
 
-  .mascot {
-    font-size: 5rem;
-    margin-bottom: 1.5rem;
-    display: block;
-  }
+  .mascot { font-size: 5rem; margin-bottom: 1.5rem; display: block; }
 
   /* ─── COMIC PICKER ─── */
-  #picker-screen {
-    display: none;
-    padding: 2rem;
-    max-width: 900px;
-    margin: 0 auto;
-  }
+  #picker-screen { display: none; padding: 2rem; max-width: 900px; margin: 0 auto; }
 
-  .screen-header {
-    font-family: 'Bangers', cursive;
-    font-size: 2.5rem;
-    letter-spacing: 2px;
-    margin-bottom: 0.25rem;
-  }
+  .screen-header { font-family: 'Bangers', cursive; font-size: 2.5rem; letter-spacing: 2px; margin-bottom: 0.25rem; }
   .screen-sub { color: #555; font-weight: 700; margin-bottom: 2rem; }
 
-  .comic-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1.5rem;
-  }
+  .comic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
 
   .comic-card {
-    border: 3px solid var(--ink);
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    box-shadow: 5px 5px 0 var(--ink);
-    background: white;
+    border: 3px solid var(--ink); border-radius: 12px; overflow: hidden;
+    cursor: pointer; box-shadow: 5px 5px 0 var(--ink); background: white;
     transition: transform 0.15s, box-shadow 0.15s;
   }
   .comic-card:hover { transform: translate(-3px,-3px); box-shadow: 8px 8px 0 var(--ink); }
-
-  .comic-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    display: block;
-    border-bottom: 3px solid var(--ink);
-  }
-
-  .comic-card-title {
-    font-family: 'Bangers', cursive;
-    font-size: 1.3rem;
-    padding: 0.6rem 1rem;
-    letter-spacing: 1px;
-    background: var(--yellow);
-  }
-
+  .comic-card img { width: 100%; height: 200px; object-fit: cover; display: block; border-bottom: 3px solid var(--ink); }
+  .comic-card-title { font-family: 'Bangers', cursive; font-size: 1.3rem; padding: 0.6rem 1rem; letter-spacing: 1px; background: var(--yellow); }
   .comic-card.done .comic-card-title { background: #c8f7c5; }
-  .done-badge {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--green);
-    padding: 0 1rem 0.5rem;
-  }
+  .done-badge { font-size: 0.75rem; font-weight: 700; color: var(--green); padding: 0 1rem 0.5rem; }
 
   /* ─── EDITOR SCREEN ─── */
-  #editor-screen {
-    display: none;
-    padding: 1.5rem;
-    max-width: 900px;
-    margin: 0 auto;
-  }
+  #editor-screen { display: none; padding: 1.5rem; max-width: 900px; margin: 0 auto; }
 
-  .editor-topbar {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
+  .editor-topbar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
 
   .btn-back {
-    background: white;
-    border: 3px solid var(--ink);
-    border-radius: 10px;
-    padding: 0.5rem 1rem;
-    font-family: 'Bangers', cursive;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 3px 3px 0 var(--ink);
-    letter-spacing: 1px;
+    background: white; border: 3px solid var(--ink); border-radius: 10px;
+    padding: 0.5rem 1rem; font-family: 'Bangers', cursive; font-size: 1.2rem;
+    cursor: pointer; box-shadow: 3px 3px 0 var(--ink); letter-spacing: 1px;
   }
   .btn-back:hover { background: #eee; }
 
-  .editor-title {
-    font-family: 'Bangers', cursive;
-    font-size: 2rem;
-    letter-spacing: 2px;
-    flex: 1;
-  }
+  .editor-title { font-family: 'Bangers', cursive; font-size: 2rem; letter-spacing: 2px; flex: 1; }
 
   .btn-save {
-    background: var(--yellow);
-    border: 3px solid var(--ink);
-    border-radius: 10px;
-    padding: 0.5rem 1.4rem;
-    font-family: 'Bangers', cursive;
-    font-size: 1.4rem;
-    cursor: pointer;
-    box-shadow: 4px 4px 0 var(--ink);
-    letter-spacing: 1px;
+    background: var(--yellow); border: 3px solid var(--ink); border-radius: 10px;
+    padding: 0.5rem 1.4rem; font-family: 'Bangers', cursive; font-size: 1.4rem;
+    cursor: pointer; box-shadow: 4px 4px 0 var(--ink); letter-spacing: 1px;
     transition: transform 0.1s, box-shadow 0.1s;
   }
   .btn-save:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
-  .save-status {
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--green);
-    min-width: 80px;
-  }
+  .save-status { font-weight: 700; font-size: 0.9rem; color: var(--green); min-width: 80px; }
 
   /* ─── COMIC PANEL WRAPPER ─── */
   .comic-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    border: 4px solid var(--ink);
-    border-radius: 8px;
-    overflow: hidden;
-    background: white;
-    box-shadow: 6px 6px 0 var(--ink);
+    position: relative; display: inline-block; width: 100%;
+    border: 4px solid var(--ink); border-radius: 8px; overflow: hidden;
+    background: white; box-shadow: 6px 6px 0 var(--ink);
   }
-
-  .comic-wrapper img {
-    width: 100%;
-    display: block;
-    user-select: none;
-  }
+  .comic-wrapper img { width: 100%; display: block; user-select: none; }
 
   /* ─── BUBBLE INPUTS ─── */
   .bubble-input-wrap {
@@ -293,54 +206,30 @@
     overflow: hidden;
     cursor: text;
   }
-
-  /* hint text */
-  .bubble-textarea::placeholder {
-    color: rgba(0,0,0,0.25);
-    font-style: italic;
-  }
+  .bubble-textarea::placeholder { color: rgba(0,0,0,0.25); font-style: italic; }
 
   /* ─── SAVE TOAST ─── */
   #toast {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
+    position: fixed; bottom: 2rem; left: 50%;
     transform: translateX(-50%) translateY(100px);
-    background: var(--ink);
-    color: var(--yellow);
-    font-family: 'Bangers', cursive;
-    font-size: 1.3rem;
-    letter-spacing: 1px;
-    padding: 0.75rem 2rem;
-    border-radius: 50px;
-    transition: transform 0.3s;
-    z-index: 999;
-    pointer-events: none;
+    background: var(--ink); color: var(--yellow);
+    font-family: 'Bangers', cursive; font-size: 1.3rem; letter-spacing: 1px;
+    padding: 0.75rem 2rem; border-radius: 50px;
+    transition: transform 0.3s; z-index: 999; pointer-events: none;
   }
   #toast.show { transform: translateX(-50%) translateY(0); }
 
+  .instructions-banner {
+    background: #e8f4fd; border: 2px dashed var(--blue); border-radius: 10px;
+    padding: 0.75rem 1rem; margin-bottom: 1.25rem;
+    font-weight: 700; color: var(--blue); font-size: 0.9rem;
+  }
+
   .teacher-link {
-    display: block;
-    text-align: center;
-    padding: 1rem;
-    font-size: 0.75rem;
-    color: #bbb;
-    text-decoration: none;
-    letter-spacing: 0.05em;
+    display: block; text-align: center; padding: 1rem;
+    font-size: 0.75rem; color: #bbb; text-decoration: none; letter-spacing: 0.05em;
   }
   .teacher-link:hover { color: #888; }
-
-  .instructions-banner {
-    background: #e8f4fd;
-    border: 2px dashed var(--blue);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    margin-bottom: 1.25rem;
-    font-weight: 700;
-    color: var(--blue);
-    font-size: 0.9rem;
-  }
-
 </style>
 </head>
 <body>
@@ -377,7 +266,6 @@
   </div>
   <div class="comic-wrapper" id="comic-wrapper">
     <img id="comic-img" src="" alt="comic" />
-    <!-- bubbles injected here -->
   </div>
 </div>
 
@@ -399,7 +287,7 @@ async function supaFetch(path, method='GET', body=null) {
       'apikey': SUPA_KEY,
       'Authorization': 'Bearer ' + SUPA_KEY,
       'Content-Type': 'application/json',
-      'Prefer': 'return=representation,resolution=merge-duplicates'
+      'Prefer': 'return=representation'
     }
   };
   if (body) opts.body = JSON.stringify(body);
@@ -409,9 +297,7 @@ async function supaFetch(path, method='GET', body=null) {
 }
 
 // ═══════════════════════════════════════════
-//  COMIC DEFINITIONS
-//  Bubbles: { x, y, w, h } as % of image size
-//  (measured relative to the rendered image)
+//  COMIC DEFINITIONS — coordinates from bubble positioner
 // ═══════════════════════════════════════════
 const COMICS = [
   {
@@ -419,18 +305,15 @@ const COMICS = [
     title: 'Video Game',
     file: 'comicvideogame.jpg',
     bubbles: [
-      // P1 TL: large oval upper-left, smaller bubble right of it
-      { x: 18, y: 18, w: 26, h: 14 },
-      { x: 37, y: 14, w: 18, h: 10 },
-      // P2 TR: large bubble upper-right half, small bubble below-right
-      { x: 72, y: 15, w: 22, h: 13 },
-      { x: 83, y: 27, w: 13, h: 9  },
-      // P3 BL: small bubble far-upper-left, larger bubble mid-left
-      { x: 9,  y: 60, w: 13, h: 9  },
-      { x: 21, y: 69, w: 18, h: 12 },
-      // P4 BR: large bubble upper area, small lower bubble
-      { x: 77, y: 62, w: 22, h: 13 },
-      { x: 83, y: 76, w: 14, h: 9  },
+      { x: 14.6, y: 9.7,  w: 24,   h: 14 },
+      { x: 43.5, y: 9.9,  w: 18.2, h: 11 },
+      { x: 87.4, y: 9.3,  w: 16,   h: 10 },
+      { x: 89.4, y: 21.7, w: 16.6, h: 10 },
+      { x: 14.1, y: 55.3, w: 16,   h: 10 },
+      { x: 7.7,  y: 66.2, w: 16,   h: 10 },
+      { x: 32.8, y: 93.9, w: 16,   h: 10 },
+      { x: 83.1, y: 56.3, w: 16.3, h: 10 },
+      { x: 84,   y: 66.9, w: 16,   h: 10 },
     ]
   },
   {
@@ -438,17 +321,12 @@ const COMICS = [
     title: 'Soccer Window',
     file: 'comicsoccerwindow.jpg',
     bubbles: [
-      // P1: large oval left, speech bubble right
-      { x: 26, y: 12, w: 33, h: 17 },
-      { x: 71, y: 11, w: 22, h: 15 },
-      // P2: one bubble right-center
-      { x: 66, y: 37, w: 30, h: 14 },
-      // P3: two bubbles
-      { x: 31, y: 61, w: 24, h: 12 },
-      { x: 71, y: 61, w: 22, h: 13 },
-      // P4: left bubble, right bubble
-      { x: 30, y: 85, w: 28, h: 12 },
-      { x: 74, y: 85, w: 20, h: 11 },
+      { x: 23.3, y: 7.7,  w: 16,   h: 10 },
+      { x: 78.7, y: 6.8,  w: 16,   h: 10 },
+      { x: 62.5, y: 35.4, w: 18.5, h: 11 },
+      { x: 34.7, y: 57.1, w: 16,   h: 10 },
+      { x: 87,   y: 60.8, w: 16.6, h: 10 },
+      { x: 32.3, y: 84.3, w: 21.1, h: 13 },
     ]
   },
   {
@@ -456,19 +334,17 @@ const COMICS = [
     title: 'Mouse & Food',
     file: 'comicmousefood.jpg',
     bubbles: [
-      // P1 TL: far-left large bubble, right-of-center smaller bubble
-      { x: 12, y: 14, w: 18, h: 17 },
-      { x: 30, y: 10, w: 17, h: 12 },
-      // P2 TR: upper-left of TR panel, lower-right of TR panel
-      { x: 61, y: 9,  w: 19, h: 13 },
-      { x: 79, y: 17, w: 16, h: 11 },
-      // P3 BL: far-left, upper-center, lower-center
-      { x: 8,  y: 65, w: 12, h: 10 },
-      { x: 29, y: 58, w: 19, h: 11 },
-      { x: 27, y: 73, w: 18, h: 10 },
-      // P4 BR: upper bubble, lower bubble
-      { x: 68, y: 58, w: 22, h: 13 },
-      { x: 71, y: 75, w: 19, h: 11 },
+      { x: 18.2, y: 6.8,  w: 17.5, h: 10 },
+      { x: 7.5,  y: 20.5, w: 16,   h: 10 },
+      { x: 21.5, y: 18.9, w: 16,   h: 10 },
+      { x: 62.9, y: 7.6,  w: 20.7, h: 12 },
+      { x: 88.1, y: 6.2,  w: 16.2, h: 10 },
+      { x: 7.9,  y: 57.2, w: 16,   h: 10 },
+      { x: 39.2, y: 52.9, w: 16,   h: 10 },
+      { x: 37.7, y: 92.1, w: 16.2, h: 10 },
+      { x: 61.7, y: 55.8, w: 16,   h: 10 },
+      { x: 86.1, y: 58.4, w: 18.5, h: 11 },
+      { x: 75.5, y: 95.1, w: 21,   h: 13 },
     ]
   },
   {
@@ -476,15 +352,11 @@ const COMICS = [
     title: 'UFO',
     file: 'comicufo.jpg',
     bubbles: [
-      // P1 TL: large bubble upper-left of panel
-      { x: 21, y: 21, w: 31, h: 16 },
-      // P2 TR: bubble sits right-of-center in right half
-      { x: 76, y: 18, w: 23, h: 14 },
-      // P3 BL: one bubble upper portion
-      { x: 20, y: 64, w: 28, h: 13 },
-      // P4 BR: upper bubble (person), lower bubble (alien)
-      { x: 69, y: 64, w: 24, h: 12 },
-      { x: 76, y: 79, w: 19, h: 10 },
+      { x: 27.3, y: 14.1, w: 21.5, h: 13 },
+      { x: 84,   y: 12.3, w: 16,   h: 10 },
+      { x: 19.1, y: 59.2, w: 19.3, h: 12 },
+      { x: 63.7, y: 58.5, w: 17.1, h: 10 },
+      { x: 82.6, y: 70.3, w: 18,   h: 11 },
     ]
   },
   {
@@ -492,12 +364,12 @@ const COMICS = [
     title: 'Laundromat',
     file: 'comiclaundryshower.jpg',
     bubbles: [
-      // P1 wide top: left bubble, right bubble
-      { x: 24, y: 18, w: 26, h: 15 },
-      { x: 74, y: 16, w: 22, h: 15 },
-      // P2 BL: upper-right bubble inside panel, lower-left bubble
-      { x: 34, y: 58, w: 26, h: 13 },
-      { x: 14, y: 72, w: 20, h: 14 },
+      { x: 28.9, y: 9.2,  w: 16,   h: 10 },
+      { x: 73.7, y: 9.9,  w: 16,   h: 10 },
+      { x: 33,   y: 48,   w: 16,   h: 10 },
+      { x: 9.7,  y: 92.1, w: 18.1, h: 11 },
+      { x: 64.5, y: 93.6, w: 16.3, h: 10 },
+      { x: 88.8, y: 94.4, w: 16,   h: 10 },
     ]
   },
   {
@@ -505,19 +377,17 @@ const COMICS = [
     title: 'Dog Walk',
     file: 'comicbookdogwalk.jpg',
     bubbles: [
-      // Row1 L: thought bubble upper-right of panel
-      { x: 29, y: 11, w: 28, h: 15 },
-      // Row1 R: large thought bubble upper-left of right panel
-      { x: 68, y: 10, w: 28, h: 16 },
-      // Row2 wide: large bubble left-center, small bubble right
-      { x: 42, y: 38, w: 30, h: 14 },
-      { x: 72, y: 37, w: 18, h: 10 },
-      // Row3 L: large upper-left bubble, smaller right bubble
-      { x: 16, y: 71, w: 22, h: 13 },
-      { x: 34, y: 65, w: 17, h: 11 },
-      // Row3 R: large thought cloud upper, small lower thought cloud
-      { x: 74, y: 66, w: 23, h: 15 },
-      { x: 80, y: 83, w: 16, h: 10 },
+      { x: 23.9, y: 3.9,  w: 16,   h: 10 },
+      { x: 36.7, y: 9.5,  w: 16,   h: 10 },
+      { x: 58.2, y: 6.9,  w: 16,   h: 10 },
+      { x: 86.9, y: 26.1, w: 16,   h: 10 },
+      { x: 8.7,  y: 35.9, w: 16,   h: 10 },
+      { x: 59.2, y: 37,   w: 16.7, h: 10 },
+      { x: 88.4, y: 36.7, w: 16,   h: 10 },
+      { x: 10.2, y: 61.5, w: 16,   h: 10 },
+      { x: 40.4, y: 60.2, w: 16,   h: 10 },
+      { x: 60.7, y: 63.3, w: 16,   h: 10 },
+      { x: 89.7, y: 69.7, w: 16,   h: 10 },
     ]
   }
 ];
@@ -527,7 +397,7 @@ const COMICS = [
 // ═══════════════════════════════════════════
 let studentName = '';
 let currentComic = null;
-let savedWork = {};  // { comicId: { bubbles: [...texts], saved_at } }
+let savedWork = {};
 
 // ═══════════════════════════════════════════
 //  SIGN-IN
@@ -553,10 +423,13 @@ async function startApp() {
 async function loadExistingWork() {
   try {
     const rows = await supaFetch(
-      `/rest/v1/comic_dialogues?student_name=eq.${encodeURIComponent(studentName)}&select=comic_id,bubble_texts,updated_at`
+      `/rest/v1/comic_dialogues?student_name=eq.${encodeURIComponent(studentName)}&select=comic_id,bubble_texts,updated_at&order=updated_at.desc`
     );
+    // Only keep most recent save per comic
     rows.forEach(r => {
-      savedWork[r.comic_id] = { bubbles: r.bubble_texts, saved_at: r.updated_at };
+      if (!savedWork[r.comic_id]) {
+        savedWork[r.comic_id] = { bubbles: r.bubble_texts, saved_at: r.updated_at };
+      }
     });
   } catch(e) { console.warn('Could not load saved work', e); }
 }
@@ -599,10 +472,9 @@ function openEditor(comic) {
   const img = document.getElementById('comic-img');
   const wrapper = document.getElementById('comic-wrapper');
 
-  // Remove old bubble inputs
   wrapper.querySelectorAll('.bubble-input-wrap').forEach(el => el.remove());
 
-  img.onload = null; // clear any previous handler first
+  img.onload = null;
   img.src = comic.file;
   if (img.complete && img.naturalWidth) {
     renderBubbles(comic);
@@ -613,9 +485,8 @@ function openEditor(comic) {
 
 function renderBubbles(comic) {
   const wrapper = document.getElementById('comic-wrapper');
-  const img = document.getElementById('comic-img');
-  const w = img.offsetWidth;
-  const h = img.offsetHeight;
+  // Clear any existing bubbles first
+  wrapper.querySelectorAll('.bubble-input-wrap').forEach(el => el.remove());
 
   const saved = savedWork[comic.id] ? savedWork[comic.id].bubbles : [];
 
@@ -648,10 +519,10 @@ async function saveWork() {
     texts.push(ta ? ta.value : '');
   });
 
+  console.log('Saving texts:', texts);
   document.getElementById('save-status').textContent = 'Saving…';
 
   try {
-    // Upsert by student_name + comic_id
     await supaFetch('/rest/v1/comic_dialogues', 'POST', {
       student_name: studentName,
       comic_id: currentComic.id,
@@ -659,7 +530,6 @@ async function saveWork() {
       bubble_texts: texts,
       updated_at: new Date().toISOString()
     });
-    // Mark done
     savedWork[currentComic.id] = { bubbles: texts, saved_at: new Date().toISOString() };
     document.getElementById('save-status').textContent = '✅ Saved!';
     showToast('Saved! Great work! 🎉');
@@ -676,7 +546,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// Re-render bubbles on resize - preserve typed text
+// Re-render bubbles on resize — preserve typed text
 window.addEventListener('resize', () => {
   if (!currentComic || document.getElementById('editor-screen').style.display === 'none') return;
   const wrapper = document.getElementById('comic-wrapper');

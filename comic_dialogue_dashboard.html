@@ -335,7 +335,8 @@ function renderTable() {
   const comicFilter = document.getElementById('filter-comic').value;
 
   let rows = allRows.filter(r => {
-    if (nameFilter && !r.student_name.toLowerCase().includes(nameFilter)) return false;
+    if (nameFilter && !((r.student_name || '').toLowerCase().includes(nameFilter) ||
+                        (r.email || '').toLowerCase().includes(nameFilter))) return false;
     if (comicFilter && r.comic_id !== comicFilter) return false;
     return true;
   });
@@ -355,7 +356,8 @@ function renderTable() {
     const ct = COMICS[r.comic_id];
     const date = new Date(r.updated_at).toLocaleDateString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
     return `<tr>
-      <td><span class="student-name">${esc(r.student_name)}</span></td>
+      <td><span class="student-name">${esc(r.student_name)}</span>
+          ${r.email ? `<div style="font-size:.78rem;color:#6b7b74">${esc(r.email)}${r.period ? ' \u00b7 P' + esc(r.period) : ''}</div>` : ''}</td>
       <td><span class="comic-badge">${ct ? ct.title : r.comic_id}</span></td>
       <td>${filled} / ${total} filled</td>
       <td class="time-cell">${date}</td>
